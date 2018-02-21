@@ -12,13 +12,13 @@ const respondJSONMeta = (request, response, status) => {
 };
 
 const getOperator = (request, response, operator) => {
-  let returnedOp;
-  const searchedOp = operator
-  for(var key in operators) {
-      if(key === searchedOp){
-          returnedOp = key;
+    let returnedOp;
+  //for(var key in operators) {
+      if(operators[operator.name]){
+          console.dir(operators)
+          returnedOp = operators[searchedOp.callsign];
       }
-  }
+  //}
 
   if (!returnedOp) {
     const responseJSON = {
@@ -62,6 +62,7 @@ const addOperator = (request, response, body) => {
 
   const statusCode = 201;
   operators[body.name] = {};
+  
 
   operators[body.name].callsign = body.callsign;
   operators[body.name].iconUrl = body.icon;
