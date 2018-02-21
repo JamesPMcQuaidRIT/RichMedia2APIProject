@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Rainbow 6 Siege Custom Operators</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  <script type="text/babel">
+
+    const handleResponse = (xhr, parseRes) => {
+        
+      const content = document.querySelector("#content");
+      const dropdown = document.querySelector("#operatorField");
+       var obj;
+        
+       if(parseRes === true){
+            obj = JSON.parse(xhr.response);
+            console.dir(obj);
+
+            if(obj.message) {
+                content.innerHTML += "<p>Message: " + obj.message + "</p>";
+            }
+
+            if(obj.users) {
+                const userList = document.createElement('p');
+                const users = JSON.stringify(obj.users);
+                content.innerHTML +=  "<p>" + users + "</p>";
+                content.appendChild(userList);
+            }
+        } 
+                
+        switch(xhr.status){
+            case 200:
+                content.innerHTML = `<b>Success</b>`;
+                break;
+            case 201:
+                dropdown.innerHTML += `<option value="${obj.callsign}" name="operator">${obj.callsign}.</option>`;
+                break;
+            case 204:
+                content.innerHTML = '<b>Updated (No Content)</b>';
+                return;
+            case 400:
+                content.innerHTML = `<b>Bad Request</b>`;
+                break;
+            default:
+                content.innerHTML = `<b>Resource Not Found</b>`;
+                break;     
+          }
+    };
+    
+    const sendPost = (e, operatorForm) => {
+
+      const nameAction = operatorForm.getAttribute('action');
+      const nameMethod = operatorForm.getAttribute('method');
+      
+      const callField = operatorForm.querySelector('#callField');
+      const iconField = operatorForm.querySelector('#iconField');
+      const nameField = operatorForm.querySelector('#nameField');
+      const gadgetField = operatorForm.querySelector('#gadgetField');
+      const descriptionField = operatorForm.querySelector('#descriptionField');
+      const primaryField = operatorForm.querySelector('#primaryField');
+      const secondaryField = operatorForm.querySelector('#secondaryField');
+      
+      const xhr = new XMLHttpRequest();
+      xhr.open(nameMethod, nameAction);
+      
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.setRequestHeader ('Accept', 'application/json');
+      xhr.onload = () => handleResponse(xhr, true);
+      
+      const formData = `callsign=${callField.value}&iconUrl=${iconField.value}&name=${nameField.value}&gadget=${gadgetField.value}&description=${descriptionField.value}&primary=${primaryField.value}&secondary=${secondaryField.value}`;
+              
+      xhr.send(formData);
+    
+      e.preventDefault();
+      return false;
+        
+    };
+
+    const requestUpdate = (e, userForm) => {
+
+      const operator = getForm.querySelector('#operatorField').value;
+      const method = getForm.querySelector('#methodSelect').value;
+      
+      const xhr = new XMLHttpRequest();
+      xhr.open(method, `/getOperator?callsign=${operator}`);
+        
+      xhr.setRequestHeader('Accept', 'application/json');
+      if(method == 'get') {
+        xhr.onload = () => handleResponse(xhr, true);
+      } else {
+        xhr.onload = () => handleResponse(xhr, false);
+      }
+        
+      
+      xhr.send();
+      
+      e.preventDefault();
+      return false;
+    }
+
+    const init = () => {
+        
+      const operatorForm = document.querySelector('#operatorForm')
+      const addOperator = (e) => sendPost(e, operatorForm);
+      operatorForm.addEventListener('submit', addOperator)
+        
+      const getForm = document.querySelector('#getForm');
+      const getOperator = (e) => requestUpdate(e, getForm);
+      getForm.addEventListener('submit', getOperator); 
+    };
+
+    window.onload = init;
+  </script>
+</head>
+<body>
+  <section id="top">
+    <h2>Rainbow 6 Siege Custom Operators</h2>
+    <form id="operatorForm" action="/addOperator" method="post">
+      <label for="callsign">Callsign: </label>
+      <input id="callField" type="text" name="callsign" />
+        <br>
+      <label for="icon">Operator Icon(url): </label>
+      <input id="iconField" type="text" name="iconUrl" />
+        <br>
+      <label for="name">Name: </label>
+      <input id="nameField" type="text" name="name" />
+        <br>
+      <label for="gadget">Gadget Name: </label>
+      <input id="gadgetField" type="text" name="gadget" />
+        <br>
+      <label for="description">Gadget Description: </label>
+      <input id="descriptionField" type="text" name="description" />
+        <br>
+      <label for="primary">Primary Weapon: </label>
+      <input id="primaryField" type="text" name="primary" />
+        <br>
+      <label for="secondary">Secondary Weapon: </label>
+      <input id="secondaryField" type="text" name="secondary" />
+        <br>
+      <input type="submit" value="Add Operator" />
+    </form>
+    <form id="getForm" action="/getOperator" method="get">
+      <select id='operatorField'>
+      </select>
+      <select id="methodSelect">
+        <option value="get">GET</option>
+        <option value="head">HEAD</option>
+      </select>
+      <input type="submit" value="Get User" />
+    </form>
+  </section>
+  <section id="content">
+  </section>
+</body>
+</html>
