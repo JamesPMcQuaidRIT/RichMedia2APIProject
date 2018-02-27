@@ -11,6 +11,7 @@
         
       const content = document.querySelector("#content");
       const dropdown = document.querySelector("#operatorField");
+        const status = document.querySelector("#status");
        var obj;
         
        if(parseRes === true){
@@ -18,33 +19,32 @@
             console.dir(obj);
 
             if(obj.message) {
-                content.innerHTML = "<p>Message: " + obj.message + "</p>";
+                status.innerHTML = "<p>Operator: " + obj.message + "</p>";
             }
 
-            if(obj.users) {
-                const userList = document.createElement('p');
-                const users = JSON.stringify(obj.users);
-                content.innerHTML +=  "<p>" + users + "</p>";
-                content.appendChild(userList);
-            }
         } 
                 
         switch(xhr.status){
             case 200:
-                console.dir(obj);                
-                content.innerHTML = `<h3>${obj.returnedOp.callsign}.</h3><img href="${obj.returnedOp.iconUrl}" width="100" height="100"></img><ul><li>Name: ${obj.returnedOp.name}.</li><li>Gadget: ${obj.returnedOp.gadget}.</li><li>Description: ${obj.returnedOp.description}.</li><li>Primary Weapon: ${obj.returnedOp.primary}.</li><li>Secondary Weapon: ${obj.returnedOp.secondary}.</li></ul>`;
+                if(obj.reloading){
+                    for(operator in obj.operators){
+                        dropdown.innerHTML += `<option value="${obj.callsign}" name="operator">${obj.callsign}.</option>`;
+                    }
+                } else {
+                    content.innerHTML = `<h3>${obj.returnedOp.callsign}.</h3><img alt="operatorLogo" src="${obj.returnedOp.iconUrl}" width="100" height="100"><ul><li>Name: ${obj.returnedOp.name}.</li><li>Gadget: ${obj.returnedOp.gadget}.</li><li>Description: ${obj.returnedOp.description}.</li><li>Primary Weapon: ${obj.returnedOp.primary}.</li><li>Secondary Weapon: ${obj.returnedOp.secondary}.</li></ul>`;
+                }
                 break;
             case 201:
                 dropdown.innerHTML += `<option value="${obj.callsign}" name="operator">${obj.callsign}.</option>`;
                 break;
             case 204:
-                content.innerHTML = '<b>Updated (No Content)</b>';
+                status.innerHTML = '<b>Updated (No Content)</b>';
                 return;
             case 400:
-                content.innerHTML = `<b>Bad Request</b>`;
+                status.innerHTML = `<b>Bad Request</b>`;
                 break;
             default:
-                content.innerHTML = `<b>Resource Not Found</b>`;
+                status.innerHTML = `<b>Resource Not Found</b>`;
                 break;     
           }
     };
@@ -98,7 +98,20 @@
       
       e.preventDefault();
       return false;
-    }
+    };
+
+    const loadMemory = (e) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `/loadOperators`);
+        
+      xhr.setRequestHeader('Accept', 'application/json');
+      xhr.onload = () => handleResponse(xhr, true);
+        
+      xhr.send();
+      
+      e.preventDefault();
+      return false;
+    };
 
     const init = () => {
         
@@ -109,6 +122,8 @@
       const getForm = document.querySelector('#getForm');
       const getOperator = (e) => requestUpdate(e, getForm);
       getForm.addEventListener('submit', getOperator); 
+        
+        
     };
 
     window.onload = init;
@@ -150,8 +165,10 @@
       </select>
       <input type="submit" value="Get User" />
     </form>
-  </section>
-  <section id="content">
-  </section>
+</section>
+  <section id="status" display="none">
+    </section>
+  <section id="content" display="none">
+  </section>>
 </body>
 </html>

@@ -34,16 +34,18 @@ const getHandler = (request, response, parsedUrl) => {
     htmlHandler.getIndex(request, response);
   } else if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
-  } else if(parsedUrl.pathname == '/getOperator') {
+  } else if (parsedUrl.pathname === '/getOperator') {
     jsonHandler.getOperator(request, response, query.parse(parsedUrl.query));
+  } else if (parsedUrl.pathname === '/loadOperators') {
+    jsonHandler.loadOperators(request, response);
   } else {
-      jsonHandler.notReal(request, response);
+    jsonHandler.notReal(request, response);
   }
 };
 
 const headHandler = (request, response, parsedUrl) => {
-  if (parsedUrl.pathname === '/getUsers') {
-    jsonHandler.getUserMeta(request, response);
+  if (parsedUrl.pathname === '/getOperator') {
+    jsonHandler.getOperatorMeta(request, response);
   } else {
     jsonHandler.notRealMeta(request, response);
   }

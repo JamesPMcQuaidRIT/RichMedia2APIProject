@@ -12,12 +12,10 @@ const respondJSONMeta = (request, response, status) => {
 };
 
 const getOperator = (request, response, operator) => {
-    let returnedOp;
-  //for(var key in operators) {
-      if(operators[operator.callsign]){
-          returnedOp = operators[operator.callsign];
-      }
-  //}
+  let returnedOp;
+  if (operators[operator.callsign]) {
+    returnedOp = operators[operator.callsign];
+  }
 
   if (!returnedOp) {
     const responseJSON = {
@@ -30,8 +28,8 @@ const getOperator = (request, response, operator) => {
   const responseJSON = {
     returnedOp,
   };
-    
-    console.dir(returnedOp);
+
+  console.dir(returnedOp);
 
   return respondJSON(request, response, 200, responseJSON);
 };
@@ -52,26 +50,25 @@ const addOperator = (request, response, body) => {
   const responseJSON = {
     message: 'Please fill out all parameters',
   };
-    
+
 
   if (!body.callsign || !body.iconUrl || !body.name || !body.gadget ||
       !body.description || !body.primary || !body.secondary) {
-      
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
-    
-    let statusCode = 201;
 
-    if (operators[body.callsign]) {
-        statusCode = 204;
-    } else {
-        operators[body.callsign] = {};
-    }
-  
+  let statusCode = 201;
+
+  if (operators[body.callsign]) {
+    statusCode = 204;
+  } else {
+    operators[body.callsign] = {};
+  }
+
 
   operators[body.callsign].callsign = body.callsign;
-  operators[body.callsign].iconUrl = body.icon;
+  operators[body.callsign].iconUrl = body.iconUrl;
   operators[body.callsign].name = body.name;
   operators[body.callsign].gadget = body.gadget;
   operators[body.callsign].description = body.description;
@@ -88,6 +85,16 @@ const addOperator = (request, response, body) => {
   return respondJSONMeta(request, response, statusCode);
 };
 
+const loadOperators = (request, response) => {
+  const reloading = true;
+  const responseJSON = {
+    operators,
+    reloading,
+  };
+
+  return respondJSON(request, response, 200, responseJSON);
+};
+
 
 module.exports = {
   getOperator,
@@ -95,4 +102,5 @@ module.exports = {
   notReal,
   notRealMeta,
   addOperator,
+  loadOperators,
 };
