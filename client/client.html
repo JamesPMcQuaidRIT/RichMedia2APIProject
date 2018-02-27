@@ -32,7 +32,7 @@
         switch(xhr.status){
             case 200:
                 console.dir(obj);                
-                content.innerHTML = `<h3>${obj.returnedOp.callsign}.</h3><img href="${obj.returnedOp.iconUrl}" width="100" height="100"></img><ul><li>${obj.returnedOp.name}.</li><li>${obj.returnedOp.gadget}.</li><li>${obj.returnedOp.description}.</li><li>${obj.returnedOp.primary}.</li><li>${obj.returnedOp.secondary}.</li></ul>`;
+                content.innerHTML = `<h3>${obj.returnedOp.callsign}.</h3><img href="${obj.returnedOp.iconUrl}" width="100" height="100"></img><ul><li>Name: ${obj.returnedOp.name}.</li><li>Gadget: ${obj.returnedOp.gadget}.</li><li>Description: ${obj.returnedOp.description}.</li><li>Primary Weapon: ${obj.returnedOp.primary}.</li><li>Secondary Weapon: ${obj.returnedOp.secondary}.</li></ul>`;
                 break;
             case 201:
                 dropdown.innerHTML += `<option value="${obj.callsign}" name="operator">${obj.callsign}.</option>`;

@@ -36,3 +36,7 @@ background: #9FA896;
 	text-align:center;
 	padding: 10px;
 }
+
+#content ul{
+	list-style-type: none;
+}
