@@ -31,7 +31,8 @@
                 
         switch(xhr.status){
             case 200:
-                content.innerHTML = `<b>Success</b>`;
+                console.dir(obj);                
+                content.innerHTML = `<h3>${obj.returnedOp.callsign}.</h3><img href="${obj.returnedOp.iconUrl}" width="100" height="100"></img><ul><li>${obj.returnedOp.name}.</li><li>${obj.returnedOp.gadget}.</li><li>${obj.returnedOp.description}.</li><li>${obj.returnedOp.primary}.</li><li>${obj.returnedOp.secondary}.</li></ul>`;
                 break;
             case 201:
                 dropdown.innerHTML += `<option value="${obj.callsign}" name="operator">${obj.callsign}.</option>`;
@@ -118,25 +119,25 @@
     <h2>Rainbow 6 Siege Custom Operators</h2>
     <form id="operatorForm" action="/addOperator" method="post">
       <label for="callsign">Callsign: </label>
-      <input id="callField" type="text" name="callsign" />
+      <input id="callField" type="text" name="callsign" placeholder="Ash"/>
         <br>
       <label for="icon">Operator Icon(url): </label>
-      <input id="iconField" type="text" name="iconUrl" />
+      <input id="iconField" type="text" name="iconUrl" placeholder="https://ubistatic19-a.akamaihd.net/resource/en-us/game/rainbow6/siege/r6-operators-badge-ash_229847.png" />
         <br>
       <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
+      <input id="nameField" type="text" name="name" placeholder="Elize Cohen" />
         <br>
       <label for="gadget">Gadget Name: </label>
-      <input id="gadgetField" type="text" name="gadget" />
+      <input id="gadgetField" type="text" name="gadget" placeholder="M120 CREM" />
         <br>
       <label for="description">Gadget Description: </label>
-      <input id="descriptionField" type="text" name="description" />
+      <input id="descriptionField" type="text" name="description" placeholder="Fires Breaching Rounds" />
         <br>
       <label for="primary">Primary Weapon: </label>
-      <input id="primaryField" type="text" name="primary" />
+      <input id="primaryField" type="text" name="primary" placeholder="R4-C" />
         <br>
       <label for="secondary">Secondary Weapon: </label>
-      <input id="secondaryField" type="text" name="secondary" />
+      <input id="secondaryField" type="text" name="secondary" placeholder="5.7 USG"/>
         <br>
       <input type="submit" value="Add Operator" />
     </form>

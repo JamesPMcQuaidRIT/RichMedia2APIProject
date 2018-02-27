@@ -14,9 +14,8 @@ const respondJSONMeta = (request, response, status) => {
 const getOperator = (request, response, operator) => {
     let returnedOp;
   //for(var key in operators) {
-      if(operators[operator.name]){
-          console.dir(operators)
-          returnedOp = operators[searchedOp.callsign];
+      if(operators[operator.callsign]){
+          returnedOp = operators[operator.callsign];
       }
   //}
 
@@ -31,6 +30,8 @@ const getOperator = (request, response, operator) => {
   const responseJSON = {
     returnedOp,
   };
+    
+    console.dir(returnedOp);
 
   return respondJSON(request, response, 200, responseJSON);
 };
@@ -59,23 +60,28 @@ const addOperator = (request, response, body) => {
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
+    
+    let statusCode = 201;
 
-  const statusCode = 201;
-  operators[body.name] = {};
+    if (operators[body.callsign]) {
+        statusCode = 204;
+    } else {
+        operators[body.callsign] = {};
+    }
   
 
-  operators[body.name].callsign = body.callsign;
-  operators[body.name].iconUrl = body.icon;
-  operators[body.name].name = body.name;
-  operators[body.name].gadget = body.gadget;
-  operators[body.name].description = body.description;
-  operators[body.name].primary = body.primary;
-  operators[body.name].secondary = body.secondary;
+  operators[body.callsign].callsign = body.callsign;
+  operators[body.callsign].iconUrl = body.icon;
+  operators[body.callsign].name = body.name;
+  operators[body.callsign].gadget = body.gadget;
+  operators[body.callsign].description = body.description;
+  operators[body.callsign].primary = body.primary;
+  operators[body.callsign].secondary = body.secondary;
 
 
   if (statusCode === 201) {
     responseJSON.message = 'Created Successfully';
-    responseJSON.callsign = operators[body.name].callsign;
+    responseJSON.callsign = operators[body.callsign].callsign;
     return respondJSON(request, response, statusCode, responseJSON);
   }
 
