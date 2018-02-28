@@ -7,12 +7,15 @@ const respondJSON = (request, response, status, object) => {
 };
 
 const respondJSONMeta = (request, response, status) => {
+    console.log("1");
   response.writeHead(status, { 'Content-Type': 'application/json' });
+    console.log("2");
   response.end();
 };
 
 const getOperator = (request, response, operator) => {
   let returnedOp;
+  const reloading = false;
   if (operators[operator.callsign]) {
     returnedOp = operators[operator.callsign];
   }
@@ -27,6 +30,7 @@ const getOperator = (request, response, operator) => {
 
   const responseJSON = {
     returnedOp,
+    reloading,  
   };
 
   console.dir(returnedOp);
@@ -52,7 +56,7 @@ const addOperator = (request, response, body) => {
   };
 
 
-  if (!body.callsign || !body.iconUrl || !body.name || !body.gadget ||
+  if (!body.callsign || !body.iconUrl || !body.name || !body.gadget || 
       !body.description || !body.primary || !body.secondary) {
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
@@ -62,10 +66,10 @@ const addOperator = (request, response, body) => {
 
   if (operators[body.callsign]) {
     statusCode = 204;
+      console.log("204");
   } else {
     operators[body.callsign] = {};
   }
-
 
   operators[body.callsign].callsign = body.callsign;
   operators[body.callsign].iconUrl = body.iconUrl;
@@ -75,13 +79,12 @@ const addOperator = (request, response, body) => {
   operators[body.callsign].primary = body.primary;
   operators[body.callsign].secondary = body.secondary;
 
-
   if (statusCode === 201) {
     responseJSON.message = 'Created Successfully';
     responseJSON.callsign = operators[body.callsign].callsign;
     return respondJSON(request, response, statusCode, responseJSON);
   }
-
+  
   return respondJSONMeta(request, response, statusCode);
 };
 

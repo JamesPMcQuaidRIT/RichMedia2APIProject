@@ -40,3 +40,9 @@ html, body {
 #content ul{
 	list-style-type: none;
 }
+
+img{
+  float: left;
+  border-style:solid;
+  border-color: black;
+}
