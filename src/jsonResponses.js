@@ -7,20 +7,21 @@ const respondJSON = (request, response, status, object) => {
 };
 
 const respondJSONMeta = (request, response, status) => {
-    console.log("1");
   response.writeHead(status, { 'Content-Type': 'application/json' });
-    console.log("2");
   response.end();
 };
 
+
+//Gets and returns operator data
 const getOperator = (request, response, operator) => {
   let returnedOp;
   const reloading = false;
-  if (operators[operator.callsign]) {
+    
+  if (operators[operator.callsign]) {//Assigns the operator data
     returnedOp = operators[operator.callsign];
   }
 
-  if (!returnedOp) {
+  if (!returnedOp) { //Checks for if the operator exsists
     const responseJSON = {
       message: "the content you are looking for doesn't exsist",
     };
@@ -32,15 +33,13 @@ const getOperator = (request, response, operator) => {
     returnedOp,
     reloading,  
   };
-
-  console.dir(returnedOp);
-
-  return respondJSON(request, response, 200, responseJSON);
+    
+  return respondJSON(request, response, 200, responseJSON);//returns operator data
 };
 
-const getOperatorMeta = (request, response) => respondJSONMeta(request, response, 200);
+const getOperatorMeta = (request, response) => respondJSONMeta(request, response, 200);//Verifies data
 
-const notReal = (request, response) => {
+const notReal = (request, response) => {//If the user goes to an invalid url
   const responseJSON = {
     message: "the content you are looking for doesn't exsist",
   };
@@ -50,6 +49,7 @@ const notReal = (request, response) => {
 
 const notRealMeta = (request, response) => respondJSONMeta(request, response, 404);
 
+//adds operator to the memory
 const addOperator = (request, response, body) => {
   const responseJSON = {
     message: 'Please fill out all parameters',
@@ -57,16 +57,15 @@ const addOperator = (request, response, body) => {
 
 
   if (!body.callsign || !body.iconUrl || !body.name || !body.gadget || 
-      !body.description || !body.primary || !body.secondary) {
+      !body.description || !body.primary || !body.secondary) {//checks to be sure all parameters are filled
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
 
   let statusCode = 201;
 
-  if (operators[body.callsign]) {
+  if (operators[body.callsign]) {//Checks if an operator with the same name already exsists
     statusCode = 204;
-      console.log("204");
   } else {
     operators[body.callsign] = {};
   }
@@ -88,7 +87,7 @@ const addOperator = (request, response, body) => {
   return respondJSONMeta(request, response, statusCode);
 };
 
-const loadOperators = (request, response) => {
+const loadOperators = (request, response) => {//Used to reload memory when you enter the page
   const reloading = true;
   const responseJSON = {
     operators,

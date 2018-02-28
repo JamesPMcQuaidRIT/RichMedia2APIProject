@@ -12,9 +12,10 @@
       const content = document.querySelector("#content");
       const dropdown = document.querySelector("#operatorField");
       const status = document.querySelector("#status");
+        
         status.style.visibility = "visible";
                     
-        switch(xhr.status){
+        switch(xhr.status){//Checks for status code from server
             case 200:
                 status.innerHTML = `<b>Operators Verified</b>`;
                 break;
@@ -33,30 +34,32 @@
           }
         
         var obj;
-       if(parseRes === true){
+       if(parseRes === true){//If the request handles data it will parse data
                obj = JSON.parse(xhr.response);
         } 
         
-        switch(xhr.status){
+        switch(xhr.status){//Uses parsed data to update the main page based on status code
             case 200:
                 content.style.visibility = "visible";
-                if(!obj.reloading){
+                
+                if(!obj.reloading){//Places the operator code on screen
                     content.innerHTML = `<h3>${obj.returnedOp.callsign}.</h3><img alt="Invalid URL" src="${obj.returnedOp.iconUrl}" width="200" height="200"><ul><li>Name: ${obj.returnedOp.name}.</li><li>Gadget: ${obj.returnedOp.gadget}.</li><li>Description: ${obj.returnedOp.description}.</li><li>Primary Weapon: ${obj.returnedOp.primary}.</li><li>Secondary Weapon: ${obj.returnedOp.secondary}.</li></ul>`;
-                } else {
+                } else {//Clears the dropdown and replaces with the current memory
+                    dropdown.innerHTML = ``;
                      for(var operator in obj.operators){
                         dropdown.innerHTML += `<option value="${obj.operators[operator].callsign}" name="operator">${obj.operators[operator].callsign}.</option>`;
                     }
                 }
                 break;
             case 201:
-                dropdown.innerHTML += `<option value="${obj.callsign}" name="operator">${obj.callsign}.</option>`;
+                dropdown.innerHTML += `<option value="${obj.callsign}" name="operator">${obj.callsign}.</option>`; //Adds new operators to dropdown menu
                 break;
             default:
                 break;     
           }
     };
     
-    const sendPost = (e, operatorForm) => {
+    const sendPost = (e, operatorForm) => {//Sends operator data to server
 
       const nameAction = operatorForm.getAttribute('action');
       const nameMethod = operatorForm.getAttribute('method');
@@ -84,7 +87,7 @@
         
     };
 
-    const requestUpdate = (e, getForm) => {
+    const requestUpdate = (e, getForm) => {//Asks for operator data to display
 
       const operator = getForm.querySelector('#operatorField').value;
       const method = getForm.querySelector('#methodSelect').value;
@@ -106,7 +109,7 @@
       return false;
     };
 
-    const loadMemory = (e, loadForm) => {
+    const loadMemory = (e, loadForm) => {//Loads all operators the server has in memory
       const xhr = new XMLHttpRequest();
       xhr.open('GET', `/loadOperators`);
         
@@ -119,7 +122,7 @@
       return false;
     };
 
-    const init = () => {
+    const init = () => {//Sets up the form submissions
         
       const loadForm = document.querySelector('#loadForm');
       const loadOperators = (e) => loadMemory(e, loadForm);
