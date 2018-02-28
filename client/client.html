@@ -16,10 +16,10 @@
                     
         switch(xhr.status){
             case 200:
-                status.innerHTML = `<b>Successful Call</b>`;
+                status.innerHTML = `<b>Operators Verified</b>`;
                 break;
             case 201:
-                status.innerHTML += `<b>Operator Assigned to Duty</b>`;
+                status.innerHTML = `<b>Operator Assigned to Duty</b>`;
                 break;
             case 204:
                 status.innerHTML = '<b>Operator Field Details Updated</b>';
